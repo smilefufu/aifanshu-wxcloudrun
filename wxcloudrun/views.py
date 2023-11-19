@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from flask import render_template, request, Response
 from run import app
@@ -90,9 +91,8 @@ def gzh_msg():
             "FromUserName": data['ToUserName'],
             "CreateTime": int(datetime.now().strftime('%s')),
             "MsgType": 'text',
-            "Content": reply_txt,
-            "MsgId": data["MsgId"]
+            "Content": reply_txt
         }
         app.logger.info("回复消息：%s", payload)
-        return Response(payload, mimetype='application/json')
+        return Response(json.dumps(payload), mimetype='application/json')
     return make_succ_empty_response()
