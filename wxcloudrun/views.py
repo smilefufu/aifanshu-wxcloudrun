@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from flask import render_template, request, Response
+from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
@@ -94,5 +94,5 @@ def gzh_msg():
             "Content": reply_txt
         }
         app.logger.info("回复消息：%s", payload)
-        return Response(json.dumps(payload), mimetype='application/json')
+        return jsonify(payload)
     return make_succ_empty_response()
