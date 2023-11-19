@@ -7,7 +7,7 @@ from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
 from wxcloudrun.utils import find_last_number, get_reply_content
 
-app.config['JSON_AS_ASCII'] = False
+app.json.ensure_ascii = False
 
 @app.route('/')
 def index():
