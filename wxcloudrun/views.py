@@ -74,6 +74,7 @@ def gzh_msg():
     if "action" in data and data["action"] == "CheckContainerPath":
         return make_succ_response(0)
 
+    app.logger.info("get data: %s", data)
     to_uer_name = data['ToUserName']
     from_user_name = data['FromUserName']
     msg_type = data['MsgType']
@@ -95,5 +96,6 @@ def gzh_msg():
             "MsgType": 'text',
             "Content": reply_txt
         }
+        app.logger.info("回复消息：%s", payload)
         return Response(payload, mimetype='application/json')
     return make_succ_empty_response()
