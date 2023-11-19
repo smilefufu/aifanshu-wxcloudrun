@@ -74,11 +74,8 @@ def gzh_msg():
         return make_succ_response(0)
 
     app.logger.info("get data: %s", data)
-    to_uer_name = data['ToUserName']
-    from_user_name = data['FromUserName']
     msg_type = data['MsgType']
     content = data['Content']
-    create_time = data['CreateTime']
     if msg_type == 'text':
         # 解析数字
         number = find_last_number(content)
@@ -89,19 +86,13 @@ def gzh_msg():
             if reply_txt is None:
                 reply_txt = "公主：仅支持1-250哦"
         payload = {
-            "ToUserName": from_user_name,
-            "FromUserName": to_uer_name,
+            "ToUserName": data['FromUserName'],
+            "FromUserName": data['ToUserName'],
             "CreateTime": int(datetime.now().strftime('%s')),
             "MsgType": 'text',
-            "Content": reply_txt
+            "Content": reply_txt,
+            "MsgId": data["MsgId"]
         }
         app.logger.info("回复消息：%s", payload)
-        # return Response(payload, mimetype='application/json')
-        return Response(f"""<xml>
-  <ToUserName><![CDATA[{from_user_name}]]></ToUserName>
-  <FromUserName><![CDATA[{to_uer_name}]]></FromUserName>
-  <CreateTime>{int(create_time)}</CreateTime>
-  <MsgType><![CDATA[text]]></MsgType>
-  <Content><![CDATA[你好]]></Content>
-</xml>""")
+        return Response(payload, mimetype='application/json')
     return make_succ_empty_response()
