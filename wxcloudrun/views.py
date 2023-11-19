@@ -4,6 +4,7 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
+from utils import find_last_number, get_reply_content
 
 
 @app.route('/')
@@ -64,3 +65,31 @@ def get_count():
     """
     counter = Counters.query.filter(Counters.id == 1).first()
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
+
+
+@app.route('/api/gzh_msg', methods=['POST'])
+def gzh_msg():
+    data = request.json
+    to_uer_name = data['ToUserName']
+    from_user_name = data['FromUserName']
+    msg_type = data['MsgType']
+    content = data['Content']
+    create_time = data['CreateTime']
+    if msg_type == 'text':
+        # 解析数字
+        number = find_last_number(content)
+        if number is None:
+            reply_txt = "公主：你想问的是什么数字呀，AI我没看懂呀"
+        else:
+            reply_txt = get_reply_content(number)
+            if reply_txt is None:
+                reply_txt = "公主：仅支持1-250哦"
+        payload = {
+            "ToUserName": from_user_name,
+            "FromUserName": to_uer_name,
+            "CreateTime": create_time,
+            "MsgType": 'text',
+            "Content": reply_txt
+        }
+        return make_succ_response(payload)
+    return make_succ_empty_response()
