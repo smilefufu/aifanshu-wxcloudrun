@@ -90,8 +90,8 @@ def gzh_msg():
             if reply_txt is None:
                 reply_txt = "公主：仅支持1-250哦"
         payload = {
-            "ToUserName": from_user_name,
-            "FromUserName": to_uer_name,
+            "ToUserName": to_uer_name,
+            "FromUserName": from_user_name,
             "CreateTime": create_time,
             "MsgType": 'text',
             "Content": reply_txt
