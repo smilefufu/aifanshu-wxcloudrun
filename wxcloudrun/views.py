@@ -96,5 +96,12 @@ def gzh_msg():
             "Content": reply_txt
         }
         app.logger.info("回复消息：%s", payload)
-        return Response(payload, mimetype='application/json')
+        # return Response(payload, mimetype='application/json')
+        return Response(f"""<xml>
+  <ToUserName><![CDATA[{from_user_name}]]></ToUserName>
+  <FromUserName><![CDATA[{to_uer_name}]]></FromUserName>
+  <CreateTime>{int(create_time)}</CreateTime>
+  <MsgType><![CDATA[text]]></MsgType>
+  <Content><![CDATA[你好]]></Content>
+</xml>""")
     return make_succ_empty_response()
