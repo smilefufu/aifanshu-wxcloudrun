@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 from flask import render_template, request, Response
 from run import app
@@ -90,9 +89,9 @@ def gzh_msg():
             if reply_txt is None:
                 reply_txt = "公主：仅支持1-250哦"
         payload = {
-            "ToUserName": to_uer_name,
-            "FromUserName": from_user_name,
-            "CreateTime": create_time,
+            "ToUserName": from_user_name,
+            "FromUserName": to_uer_name,
+            "CreateTime": int(datetime.now().strftime('%s')),
             "MsgType": 'text',
             "Content": reply_txt
         }
