@@ -4,7 +4,7 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
-from utils import find_last_number, get_reply_content
+from wxcloudrun.utils import find_last_number, get_reply_content
 
 
 @app.route('/')
