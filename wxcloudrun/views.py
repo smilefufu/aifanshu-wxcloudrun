@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from flask import render_template, request
 from run import app
@@ -69,6 +70,7 @@ def get_count():
 
 @app.route('/api/gzh_msg', methods=['POST'])
 def gzh_msg():
+    logging.info(request.json)
     data = request.json
     to_uer_name = data['ToUserName']
     from_user_name = data['FromUserName']
