@@ -1,4 +1,5 @@
 import re
+import time
 
 __ANSWERS = """
 1:
