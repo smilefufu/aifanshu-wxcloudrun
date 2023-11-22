@@ -5,9 +5,10 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
-from wxcloudrun.utils import find_last_number, get_reply_content
+from wxcloudrun.utils import find_last_number, get_reply_content, Storage
 
 app.json.ensure_ascii = False
+__cache = Storage()
 
 @app.route('/')
 def index():
@@ -76,7 +77,13 @@ def gzh_msg():
         return make_succ_response(0)
 
     app.logger.info("get data: %s", data)
+    from_user = data['FromUserName']
+    create_time = data['CreateTime']
     msg_type = data['MsgType']
+    key = f"{from_user}_{create_time}_{msg_type}"
+    if __cache.get(key):
+        # 去重，已经回复过了
+        return make_succ_empty_response()
     try:
         content = data['Content']
     except KeyError:
@@ -104,7 +111,7 @@ def gzh_msg():
 
 从今天开始，我就是你的AI翻书小🤖️啦~
 
-[Sun]AI翻书的背景：本来是在自己纠结症发作时用的，后来发现很多公主也有需求，但无奈只能在很多帖子下面苦苦等答案，所以AI翻书小🤖️就诞生啦~ 
+[Sun]AI翻书的背景：本来是在自己纠结症发作时用的，后来发现很多公主也有需求，但无奈只能在很多帖子下面苦苦等答案，所以AI翻书小🤖️就诞生啦~
 [Sun]AI翻书的使用：建议公主们每天只提问一次哦，次数太多可就不准了哦~
 
 ————
@@ -117,5 +124,6 @@ def gzh_msg():
             "Content": reply_txt
         }
         app.logger.info("回复消息：%s", payload)
+        __cache.set(key, 1, 60 * 60)
         return jsonify(payload)
     return make_succ_empty_response()
