@@ -80,6 +80,9 @@ def gzh_msg():
     from_user = data['FromUserName']
     create_time = data['CreateTime']
     msg_type = data['MsgType']
+    if msg_type == 'event' and data['Event'] == 'unsubscribe':
+        # 过滤取消关注事件
+        return make_succ_empty_response()
     key = f"{from_user}_{create_time}_{msg_type}"
     if __cache.get(key):
         # 去重，已经回复过了
