@@ -105,6 +105,7 @@ def gzh_msg():
             "Content": reply_txt
         }
         app.logger.info("回复消息：%s", payload)
+        __cache.set(key, 1, 60 * 60)
         return jsonify(payload)
     elif msg_type == 'event':
         reply_txt = """欢迎公主👸
