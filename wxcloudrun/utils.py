@@ -1136,3 +1136,43 @@ def get_reply_content(number):
     if number in answers_dict:
         return ANSWER_TEMPLATE.format(answers_dict[number])
     return None
+
+
+class Storage:
+    """简单存储数据"""
+    def __init__(self, filename="data.json"):
+        self.filename = filename
+
+    def load(self):
+        """加载数据"""
+        try:
+            with open(self.filename, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (IOError, ValueError):
+            return {}
+
+    def set(self, key, value, ttl=None):
+        """保存数据"""
+        data = self.load()
+        data[key] = {"value": value}
+        if ttl:
+            data[key]["ttl"] = int(time.time()) + ttl
+        with open(self.filename, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+
+    def get(self, key, default=None):
+        """获取数据"""
+        data = self.load()
+        if key in data:
+            value_obj = data[key]
+            if "ttl" in value_obj:
+                # check ttl
+                if int(time.time()) > value_obj["ttl"]:  # expired, delete key and save file
+                    del data[key]
+                    with open(self.filename, "w", encoding="utf-8") as f:
+                        json.dump(data, f)
+                else:
+                    return value_obj["value"]
+            else:
+                return value_obj["value"]
+        return default
